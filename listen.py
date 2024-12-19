@@ -2,47 +2,58 @@ import os
 import sounddevice as sd
 import numpy as np
 from scipy.io.wavfile import write
+import transcribe  # Import the transcribe module
 
-# Parameters
-duration = 10  # Duration of recording in seconds
-sample_rate = 44100  # Sampling rate (Hz)
-
-# Automatically select an input device
 def get_default_input_device():
     devices = sd.query_devices()
     for index, device in enumerate(devices):
-        if device['max_input_channels'] > 0:  # Device has input channels
-            return index  # Return the index of the first valid input device
+        if device['max_input_channels'] > 0:
+            return index
     raise RuntimeError("No input device found with at least one input channel.")
 
-# Find the default input device
-try:
-    input_device = get_default_input_device()
-    print(f"Using input device: {sd.query_devices(input_device)['name']}")
-except RuntimeError as e:
-    print(e)
-    exit(1)
+def record_audio(duration, sample_rate, input_device_index, output_file):
+    print("Recording...")
+    audio_data = sd.rec(
+        int(duration * sample_rate),
+        samplerate=sample_rate,
+        channels=1,
+        dtype=np.int16,
+        device=input_device_index
+    )
+    sd.wait()
+    print("Recording complete.")
 
-# Ensure the output folder exists
-output_folder = "recorded-audio-files"
-os.makedirs(output_folder, exist_ok=True)
+    # Ensure the folder exists
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-# Define the output file path
-output_file = os.path.join(output_folder, "recorded-output.wav")
+    # Save the recording
+    write(output_file, sample_rate, audio_data)
+    print(f"Audio file saved to: {output_file}")
 
-# Record audio
-print("Recording...")
-audio_data = sd.rec(
-    int(duration * sample_rate),
-    samplerate=sample_rate,
-    channels=1,  # Use mono for universal compatibility
-    dtype=np.int16,
-    device=input_device
-)
-sd.wait()  # Wait until the recording is finished
-print("Recording complete. Saving file...")
+def main():
+    duration = 10  # Recording duration in seconds
+    sample_rate = 44100  # Sampling rate in Hz
+    audio_output_file = "recorded-audio-files/recorded-output.wav"
+    transcription_output_file = "transcribed-audio-files/transcription.txt"
 
-# Save the audio to the specified file
-write(output_file, sample_rate, audio_data)
+    try:
+        input_device = get_default_input_device()
+        print(f"Using input device: {sd.query_devices(input_device)['name']}")
 
-print(f"File saved as '{output_file}'.")
+        # Record the audio
+        record_audio(duration, sample_rate, input_device, audio_output_file)
+
+        # Automatically call the transcription function
+        print("Starting transcription...")
+        transcription = transcribe.whisper_test(audio_output_file)  # Call transcription
+        print("\nTranscription:")
+        print(transcription)
+
+        # Save the transcription to the specified folder
+        transcribe.save_transcription(transcription, transcription_output_file)
+
+    except RuntimeError as e:
+        print(e)
+
+if __name__ == "__main__":
+    main()
