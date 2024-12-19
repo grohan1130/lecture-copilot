@@ -31,7 +31,7 @@ def record_audio(duration, sample_rate, input_device_index, output_file):
     print(f"Audio file saved to: {output_file}")
 
 def main():
-    duration = 10  # Recording duration in seconds
+    duration = 3600  # Recording duration in seconds
     sample_rate = 44100  # Sampling rate in Hz
     audio_output_file = "recorded-audio-files/recorded-output.wav"
     transcription_output_file = "transcribed-audio-files/transcription.txt"

@@ -1,0 +1,1 @@
+The text lists the first ten natural numbers in ascending order.

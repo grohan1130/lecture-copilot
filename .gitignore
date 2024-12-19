@@ -1,2 +1,3 @@
 lecture-copilot-venv/
 __pycache__/
+.env
