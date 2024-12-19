@@ -1,2 +1,2 @@
 # lecture-copilot
-Real-time lecture transcription app to convert audio from a microphone into text, enabling students to capture and save lecture notes effortlessly.
+Real-time lecture transcription and summarization app designed to enhance the student learning experience. This app allows students to record lectures and receive real-time transcripts of their professor's verbal lessons. It effortlessly converts audio from a microphone into text, enabling students to capture and save lecture notes. Additionally, it provides intelligent summaries and contextualization of lectures, helping students focus on key insights and understand the material in a meaningful way.
