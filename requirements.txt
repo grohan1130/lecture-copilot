@@ -1,0 +1,5 @@
+ffmpeg==1.4
+openai-whisper @ git+https://github.com/openai/whisper.git@90db0de1896c23cbfaf0c58bc2d30665f709f170
+sounddevice==0.5.1
+scipy==1.14.1
+
